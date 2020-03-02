@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useEffect, useReducer, useCallback, useRef } from 'react';
 
 import './index.css';
 
@@ -14,12 +14,22 @@ function App() {
     }
   }
 
+  const pageReducer = (state, action) => {
+    switch (action.type) {
+      case 'ADVANCE_PAGE':
+        return { ...state, page: state.page + 1 }
+      default:
+        return state;
+    }
+  }
+
+  const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 })
   const [imgData, imgDispatch] = useReducer(imgReducer, { images: [], fetching: true, })
 
   // make API calls
   useEffect(() => {
     imgDispatch({ type: 'FETCHING_IMAGES', fetching: true })
-    fetch('https://picsum.photos/v2/list?page=0&limit=10')
+    fetch(`https://picsum.photos/v2/list?page=${pager.page}&limit=10`)
       .then(data => data.json())
       .then(images => {
         imgDispatch({ type: 'STACK_IMAGES', images })
@@ -30,7 +40,29 @@ function App() {
         imgDispatch({ type: 'FETCHING_IMAGES', fetching: false })
         return e
       })
-  }, [ imgDispatch ])
+  }, [imgDispatch, pager.page])
+
+  // implement infinite scrolling with intersection observer
+  let bottomBoundaryRef = useRef(null);
+
+  const scrollObserver = useCallback(
+    node => {
+      new IntersectionObserver(entries => {
+        entries.forEach(en => {
+          if (en.intersectionRatio > 0) {
+            pagerDispatch({ type: 'ADVANCE_PAGE' });
+          }
+        });
+      }).observe(node);
+    },
+    [pagerDispatch]
+  );
+
+  useEffect(() => {
+    if (bottomBoundaryRef.current) {
+      scrollObserver(bottomBoundaryRef.current);
+    }
+  }, [scrollObserver, bottomBoundaryRef]);
 
   return (
     <div className="">
@@ -63,6 +95,13 @@ function App() {
           })}
         </div>
       </div>
+
+      {imgData.fetching && (
+        <div className="text-center bg-secondary m-auto p-3">
+          <p className="m-0 text-white">Getting images</p>
+        </div>
+      )}
+      <div id='page-bottom-boundary' style={{ border: '1px solid red' }} ref={bottomBoundaryRef}></div>
     </div>
   );
 }
