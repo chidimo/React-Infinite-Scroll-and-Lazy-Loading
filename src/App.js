@@ -1,5 +1,6 @@
-import React, { useEffect, useReducer, useCallback, useRef } from 'react';
+import React, { useReducer, useRef } from 'react';
 
+import { useFetch, useInfiniteScroll, useLazyLoading } from './customHooks'
 import './index.css';
 
 function App() {
@@ -26,75 +27,10 @@ function App() {
   const [pager, pagerDispatch] = useReducer(pageReducer, { page: 0 })
   const [imgData, imgDispatch] = useReducer(imgReducer, { images: [], fetching: true, })
 
-  // make API calls
-  useEffect(() => {
-    imgDispatch({ type: 'FETCHING_IMAGES', fetching: true })
-    fetch(`https://picsum.photos/v2/list?page=${pager.page}&limit=10`)
-      .then(data => data.json())
-      .then(images => {
-        imgDispatch({ type: 'STACK_IMAGES', images })
-        imgDispatch({ type: 'FETCHING_IMAGES', fetching: false })
-      })
-      .catch(e => {
-        // handle error
-        imgDispatch({ type: 'FETCHING_IMAGES', fetching: false })
-        return e
-      })
-  }, [imgDispatch, pager.page])
-
-  // implement infinite scrolling with intersection observer
   let bottomBoundaryRef = useRef(null);
-
-  const scrollObserver = useCallback(
-    node => {
-      new IntersectionObserver(entries => {
-        entries.forEach(en => {
-          if (en.intersectionRatio > 0) {
-            pagerDispatch({ type: 'ADVANCE_PAGE' });
-          }
-        });
-      }).observe(node);
-    },
-    [pagerDispatch]
-  );
-
-  useEffect(() => {
-    if (bottomBoundaryRef.current) {
-      scrollObserver(bottomBoundaryRef.current);
-    }
-  }, [scrollObserver, bottomBoundaryRef]);
-
-  // lazy loads images with intersection observer
-  // only swap out the image source if the new url exists
-  const imagesRef = useRef(null);
-
-  const imgObserver = useCallback(node => {
-    const intObs = new IntersectionObserver(entries => {
-      entries.forEach(en => {
-        if (en.intersectionRatio > 0) {
-          const currentImg = en.target;
-          const newImgSrc = currentImg.dataset.src;
-
-          // only swap out the image source if the new url exists
-          if (!newImgSrc) {
-            console.error('Image source is invalid');
-          } else {
-            currentImg.src = newImgSrc;
-          }
-          intObs.unobserve(node); // detach the observer when done
-        }
-      });
-    })
-    intObs.observe(node);
-  }, []);
-
-  useEffect(() => {
-    imagesRef.current = document.querySelectorAll('.card-img-top');
-
-    if (imagesRef.current) {
-      imagesRef.current.forEach(img => imgObserver(img));
-    }
-  }, [imgObserver, imagesRef, imgData.images]);
+  useFetch(pager, imgDispatch);
+  useLazyLoading('.card-img-top', imgData.images)
+  useInfiniteScroll(bottomBoundaryRef, pagerDispatch);
 
   return (
     <div className="">
