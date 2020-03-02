@@ -64,6 +64,35 @@ function App() {
     }
   }, [scrollObserver, bottomBoundaryRef]);
 
+  // lazy loads images with intersection observer
+  // only swap out the image source if the new url exists
+  const imagesRef = useRef(null);
+
+  const imgObserver = useCallback(node => {
+    new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (en.intersectionRatio > 0) {
+          const currentImg = en.target;
+          const newImgSrc = currentImg.dataset.src;
+
+          if (!newImgSrc) {
+            console.error('Image source is invalid');
+          } else {
+            currentImg.src = newImgSrc;
+          }
+        }
+      });
+    }).observe(node);
+  }, []);
+
+  useEffect(() => {
+    imagesRef.current = document.querySelectorAll('.card-img-top');
+
+    if (imagesRef.current) {
+      imagesRef.current.forEach(img => imgObserver(img));
+    }
+  }, [imgObserver, imagesRef, imgData.images]);
+
   return (
     <div className="">
       <nav className="navbar bg-light">
@@ -83,8 +112,9 @@ function App() {
                 <div className="card-body ">
                   <img
                     alt={author}
+                    data-src={download_url}
                     className="card-img-top"
-                    src={download_url}
+                    src={'https://picsum.photos/id/870/300/300?grayscale&blur=2'}
                   />
                 </div>
                 <div className="card-footer">
