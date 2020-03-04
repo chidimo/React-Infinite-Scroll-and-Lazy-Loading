@@ -23,10 +23,12 @@ function App() {
       .then(data => data.json())
       .then(images => {
         imgDispatch({ type: 'STACK_IMAGES', images })
-        imgDispatch({ type: 'FETCHING_IMAGES', fetching: true })
+        imgDispatch({ type: 'FETCHING_IMAGES', fetching: false })
       })
       .catch(e => {
-        console.error(e)
+        // handle error
+        imgDispatch({ type: 'FETCHING_IMAGES', fetching: false })
+        return e
       })
   }, [ imgDispatch ])
 
