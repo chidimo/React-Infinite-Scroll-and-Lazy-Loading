@@ -8,10 +8,12 @@ export const useFetch = (data, dispatch) => {
       .then(data => data.json())
       .then(images => {
         dispatch({ type: 'STACK_IMAGES', images })
-        dispatch({ type: 'FETCHING_IMAGES', fetching: true })
+        dispatch({ type: 'FETCHING_IMAGES', fetching: false })
       })
       .catch(e => {
-        console.error(e)
+        // handle error
+        dispatch({ type: 'FETCHING_IMAGES', fetching: false })
+        return e;
       })
   }, [dispatch, data.page])
 }
