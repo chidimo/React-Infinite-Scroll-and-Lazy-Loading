@@ -43,7 +43,7 @@ export const useInfiniteScroll = (scrollRef, dispatch) => {
 // lazy load images with intersection observer
 export const useLazyLoading = (imgSelector, items) => {
   const imgObserver = useCallback(node => {
-    new IntersectionObserver(entries => {
+    const intObs = new IntersectionObserver(entries => {
       entries.forEach(en => {
         if (en.intersectionRatio > 0) {
           const currentImg = en.target;
@@ -55,9 +55,11 @@ export const useLazyLoading = (imgSelector, items) => {
           } else {
             currentImg.src = newImgSrc;
           }
+          intObs.unobserve(node);
         }
       });
-    }).observe(node);
+    })
+    intObs.observe(node);
   }, []);
 
   const imagesRef = useRef(null);
