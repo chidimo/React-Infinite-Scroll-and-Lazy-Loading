@@ -69,20 +69,23 @@ function App() {
   const imagesRef = useRef(null);
 
   const imgObserver = useCallback(node => {
-    new IntersectionObserver(entries => {
+    const intObs = new IntersectionObserver(entries => {
       entries.forEach(en => {
         if (en.intersectionRatio > 0) {
           const currentImg = en.target;
           const newImgSrc = currentImg.dataset.src;
 
+          // only swap out the image source if the new url exists
           if (!newImgSrc) {
             console.error('Image source is invalid');
           } else {
             currentImg.src = newImgSrc;
           }
+          intObs.unobserve(node); // detach the observer when done
         }
       });
-    }).observe(node);
+    })
+    intObs.observe(node);
   }, []);
 
   useEffect(() => {
