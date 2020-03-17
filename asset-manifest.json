@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/React-Infinite-Scroll-and-Lazy-Loading/static/css/main.a8dc37a1.chunk.css",
+    "main.js": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/main.12669cb8.chunk.js",
+    "main.js.map": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/main.12669cb8.chunk.js.map",
+    "runtime-main.js": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/runtime-main.129139ca.js",
+    "runtime-main.js.map": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/runtime-main.129139ca.js.map",
+    "static/js/2.e60d329a.chunk.js": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/2.e60d329a.chunk.js",
+    "static/js/2.e60d329a.chunk.js.map": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/2.e60d329a.chunk.js.map",
+    "index.html": "/React-Infinite-Scroll-and-Lazy-Loading/index.html",
+    "precache-manifest.8703cab500496e0136cf416e8a784ee7.js": "/React-Infinite-Scroll-and-Lazy-Loading/precache-manifest.8703cab500496e0136cf416e8a784ee7.js",
+    "service-worker.js": "/React-Infinite-Scroll-and-Lazy-Loading/service-worker.js",
+    "static/css/main.a8dc37a1.chunk.css.map": "/React-Infinite-Scroll-and-Lazy-Loading/static/css/main.a8dc37a1.chunk.css.map",
+    "static/js/2.e60d329a.chunk.js.LICENSE.txt": "/React-Infinite-Scroll-and-Lazy-Loading/static/js/2.e60d329a.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.129139ca.js",
+    "static/js/2.e60d329a.chunk.js",
+    "static/css/main.a8dc37a1.chunk.css",
+    "static/js/main.12669cb8.chunk.js"
+  ]
+}
